@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: https:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#f4f1ea">
+  <title>Taste · Jerry</title>
+  <link rel="icon" href="icons/taste-engine-192.png">
+  <link rel="manifest" href="pwa-manifest.json">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-head">
+  <a class="wordmark" href="#home" aria-label="Taste home">Taste</a>
+  <nav aria-label="Taste sections">
+    <a href="#home" data-nav="home">Today</a>
+    <a href="#deepcuts" data-nav="deepcuts">What next</a>
+    <a href="#people" data-nav="people">People</a>
+    <a href="#library" data-nav="library">Library</a>
+    <a href="#kafka" data-nav="kafka">Kafka</a>
+  </nav>
+</header>
+
+<main id="main" tabindex="-1">
+  <p id="status" class="sr-only" role="status" aria-live="polite"></p>
+
+  <section id="home-view" class="view">
+    <header class="hero">
+      <p class="eyebrow">YOUR ACTUAL TASTE · JULY 30</p>
+      <h1>Finish what has you.</h1>
+      <p>One continuation and three starting points earned through people you trust. All 17 researched options are ready in What next, with an honest reason for each.</p>
+    </header>
+    <section id="continue-card" class="continue-card" aria-label="Continue now"></section>
+    <section class="section-block">
+      <div class="section-head">
+        <div><p class="eyebrow">AFTER KAFKA</p><h2>Three starting points</h2></div>
+        <p>Start here, or open the full researched queue when none of these fit your mood.</p>
+      </div>
+      <div id="next-grid" class="next-grid"></div>
+      <a class="all-next-link" href="#deepcuts">
+        <strong>See all 17 researched options</strong>
+        <span>6 to watch · 11 to read · every option explains why it is here</span>
+      </a>
+    </section>
+    <section class="proof-strip" aria-label="Taste review summary">
+      <div><strong>3,498</strong><span>answers preserved</span></div>
+      <div><strong>3,458</strong><span>canonical works after dedupe</span></div>
+      <div><strong>261</strong><span>stayed or changed you</span></div>
+      <div><strong>17</strong><span>researched deep cuts now</span></div>
+    </section>
+    <section class="why-system">
+      <p class="eyebrow">THE NEW RULE</p>
+      <h2>Person first. Work second.</h2>
+      <p>Taste follows creators whose work already changed your lens. A new title appears here only when it extends that person, joins two strong anchors, or you explicitly chose it as priority. Everything else stays in the library.</p>
+      <div class="utility-links">
+        <a href="#people">See your creator map</a>
+        <a href="#deepcuts">See everything to consume next</a>
+        <a href="review/calibrate.html">Open completed review</a>
+        <button id="open-sources" type="button">How reasons are made</button>
+      </div>
+    </section>
+  </section>
+
+  <section id="deepcuts-view" class="view" hidden>
+    <header class="page-head">
+      <p class="eyebrow">UNCONSUMED · SOURCE-BACKED</p>
+      <h1>All 17 researched options.</h1>
+      <p>This is the full decision queue—not the 3,199-title archive. Every option is unconsumed, begins with a person you care about, and says whether the connection is direct evidence or an editorial inference.</p>
+    </header>
+    <div id="next-filters" class="chips" role="group" aria-label="Filter what to consume"></div>
+    <p id="next-count" class="muted" aria-live="polite"></p>
+    <div id="deepcut-groups"></div>
+  </section>
+
+  <section id="people-view" class="view" hidden>
+    <header class="page-head">
+      <p class="eyebrow">THE CENTER OF THE GRAPH</p>
+      <h1>People worth following.</h1>
+      <p>Tap any person to see how they build, what shaped them, the evidence behind that claim, and one next trail. “Priority test” still means the relationship needs a decisive work.</p>
+    </header>
+    <div id="people-groups"></div>
+  </section>
+
+  <section id="library-view" class="view" hidden>
+    <header class="page-head">
+      <p class="eyebrow">SEARCH, DON'T DUMP</p>
+      <h1>The library.</h1>
+      <p>Each anchor opens into a complete in-page dossier: why you kept it, what was happening when it was made, how it was built, what to notice, and one precise next thread. Evidence links are citations at the bottom—not shopping links or the reading experience. Search the 3,199-work archive only when you need it.</p>
+    </header>
+    <div id="core-shelves"></div>
+    <section class="catalog-search">
+      <label for="library-search">Search the larger catalog</label>
+      <input id="library-search" type="search" placeholder="Title, creator, medium…" autocomplete="off">
+      <div id="media-filters" class="chips" role="group" aria-label="Filter library"></div>
+      <p id="library-count" class="muted" aria-live="polite"></p>
+      <div id="library-results" class="library-results"></div>
+    </section>
+  </section>
+
+  <section id="kafka-view" class="view" hidden>
+    <header class="page-head kafka-head">
+      <p class="eyebrow">INSIDE THE BOOK YOU'RE FINISHING</p>
+      <h1>Kafka on the Shore</h1>
+      <p>Not another reading list: the music, texts, ideas, and invented works already inside the novel.</p>
+      <div class="hero-actions">
+        <a class="primary-link" href="https://wisdom-reader.onrender.com/books/kafka/">Continue the companion</a>
+        <a href="https://open.spotify.com/playlist/2fg26JdDLXOWQGJUF2jy0O" target="_blank" rel="noopener">Murakami's playlist</a>
+      </div>
+    </header>
+    <section id="kafka-feature" class="kafka-feature"></section>
+    <div id="kafka-filters" class="chips" role="group" aria-label="Filter Kafka connections"></div>
+    <p id="kafka-count" class="muted"></p>
+    <div id="kafka-list" class="kafka-list"></div>
+  </section>
+
+  <section id="sources-view" class="view" hidden>
+    <header class="page-head">
+      <p class="eyebrow">WHY SOMETHING APPEARS</p>
+      <h1>Evidence, not mystique.</h1>
+      <p>The site distinguishes what you directly marked, what older notes explain, and what is still only a test.</p>
+    </header>
+    <div class="method-grid">
+      <article><strong>Direct</strong><h2>You chose it.</h2><p>Priority, want-more, love, or lasting-impact answers from the completed review.</p></article>
+      <article><strong>Explained</strong><h2>A prior reaction says why.</h2><p>Examples: visually singular, grounded moral pressure, legible depth, or clear lived argument.</p></article>
+      <article><strong>Test</strong><h2>The reason is honest about uncertainty.</h2><p>No invented endorsement. The card states what connection is being tested and what could fail.</p></article>
+    </div>
+    <p class="source-note">The raw 3,498-answer export is not published in this PWA. This surface contains only the curated signals needed to make a choice.</p>
+    <button id="back-home" type="button">Back to Today</button>
+  </section>
+</main>
+
+<template id="work-card-template">
+  <article class="work-card">
+    <img alt="" loading="lazy">
+    <div>
+      <p class="work-kind"></p>
+      <h3></h3>
+      <p class="creator"></p>
+      <p class="reason"></p>
+      <p class="signal"></p>
+      <div class="card-actions"></div>
+    </div>
+  </article>
+</template>
+
+<script src="app.js"></script>
+</body>
+</html>
