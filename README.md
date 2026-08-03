@@ -2,7 +2,7 @@
 
 **A recommendation should remember the reason—not just the rating.**
 
-**[Open Taste](https://jerry-taste.vercel.app/)**
+**[Open Taste](https://jerryshi042003.github.io/taste/)**
 
 Taste is a local-first movie, manga, book, and creator map. It uses the exact reason a work mattered—grounded struggle, singular form, moral clarity, or a failed expectation—to choose what deserves attention next.
 
@@ -46,3 +46,7 @@ device-local reaction → immediate rerank
 ```
 
 The repository contains the public static application and the same reviewed data files used by the live deployment.
+
+GitHub Pages is the canonical host. Because the product is entirely static and
+stores reactions on-device, it has no server process to sleep and no database
+quota that can interrupt use.
