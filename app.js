@@ -2,7 +2,7 @@
   "use strict";
   const $ = (s, root = document) => root.querySelector(s);
   const $$ = (s, root = document) => [...root.querySelectorAll(s)];
-  const state = { taste: null, catalog: [], connections: null, deepcuts: null, music: [], musicIndex: 0, worlds: [], worldIndex: 0, musicMode: "worlds", medium: "all", kafkaFilter: "all", nextFilter: "all" };
+  const state = { taste: null, catalog: [], connections: null, deepcuts: null, stories: [], music: [], musicIndex: 0, worlds: [], worldIndex: 0, musicMode: "worlds", medium: "all", kafkaFilter: "all", nextFilter: "all" };
   const progressKey = "jerry-taste-home-v1";
   const musicKey = "jerry-taste-music-v1";
   const worldKey = "jerry-taste-music-worlds-v1";
@@ -101,20 +101,27 @@
       <div class="card-actions">${(item.links || []).map(x => linkHtml(x)).join("")}</div></div>
     </article>`;
   }
+  function storyTrailHtml(item) {
+    const actions = item.actions || [{ label: item.actionLabel, url: item.actionUrl }];
+    return `<article class="story-trail-card"><div class="story-trail-head"><span>${escapeHtml(item.status)}</span>
+      <div><p class="work-kind">${escapeHtml(item.medium)}</p><h2>${escapeHtml(item.title)}</h2><p class="creator">${escapeHtml(item.creator)}</p></div></div>
+      <p class="story-trail-reason">${escapeHtml(item.reason)}</p>
+      <div class="story-trail-source"><strong>How this entered the map</strong><p>${escapeHtml(item.sourceReason)}</p>
+      <a href="${escapeHtml(item.sourceUrl)}" target="_blank" rel="noopener">${escapeHtml(item.sourceLabel)} ↗</a></div>
+      <p class="story-trail-boundary">${escapeHtml(item.boundary)}</p>
+      <div class="story-trail-links">${actions.map(action => `<a href="${escapeHtml(action.url)}" target="_blank" rel="noopener">${escapeHtml(action.label)}</a>`).join("")}</div></article>`;
+  }
+  function storyResultsText() {
+    const lines = ["Jerry's Taste — current story trails", "https://jerryshi042003.github.io/taste/#home", ""];
+    state.stories.forEach(item => {
+      lines.push(`${item.status.toUpperCase()}: ${item.title} — ${item.creator}`, item.reason);
+      (item.actions || [{ label: item.actionLabel, url: item.actionUrl }]).forEach(action => lines.push(`${action.label.replace(" ↗", "")}: ${action.url}`));
+      lines.push(`Source: ${item.sourceLabel} — ${item.sourceUrl}`, "");
+    });
+    return lines.join("\n");
+  }
   function renderHome() {
-    const done = Boolean(progress().kafkaFinished);
-    const item = state.taste.continue;
-    $("#continue-card").innerHTML = `<div class="continue-art"><img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)} artwork"></div>
-      <div class="continue-copy"><p class="eyebrow">${done ? "FINISHED" : "CONTINUE NOW"}</p>
-      <h2>${escapeHtml(done ? item.finishedTitle : item.title)}</h2>
-      <p>${escapeHtml(done ? item.finishedReason : item.reason)}</p>
-      ${done ? "" : '<div class="progress-line" aria-label="Almost finished"><span></span></div><small>Almost finished · exact position stays in Wisdom</small>'}
-      <div class="continue-actions">${linkHtml(item.primary, "primary-link")}${linkHtml(item.secondary)}
-      <button id="kafka-finished" type="button">${done ? "Undo finished" : "I finished it"}</button></div></div>`;
-    $("#kafka-finished").onclick = () => {
-      const next = progress(); next.kafkaFinished = !done; saveProgress(next); renderHome();
-      $("#status").textContent = next.kafkaFinished ? "Kafka on the Shore marked finished." : "Kafka on the Shore returned to Continue.";
-    };
+    $("#story-map").innerHTML = state.stories.map(storyTrailHtml).join("");
     const index = new Map(allDeepcuts().map(item => [item.id, item]));
     $("#next-grid").innerHTML = state.deepcuts.featuredIds.map(id => cardHtml(index.get(id))).join("");
   }
@@ -413,15 +420,16 @@
   function route() { showView(location.hash.slice(1) || "home"); }
   async function start() {
     try {
-      const [taste, recommendations, connections, deepcuts, music, worlds] = await Promise.all([
+      const [taste, recommendations, connections, deepcuts, stories, music, worlds] = await Promise.all([
         fetch("data/actual-taste.json").then(r => { if (!r.ok) throw Error("Taste map unavailable"); return r.json(); }),
         fetch("data/recommendations.json").then(r => { if (!r.ok) throw Error("Library unavailable"); return r.json(); }),
         fetch("data/work-connections.json").then(r => { if (!r.ok) throw Error("Kafka map unavailable"); return r.json(); }),
         fetch("data/deepcuts.json").then(r => { if (!r.ok) throw Error("Deep cuts unavailable"); return r.json(); }),
+        fetch("data/story-trails.json").then(r => { if (!r.ok) throw Error("Story trails unavailable"); return r.json(); }),
         fetch("data/music-review.json").then(r => { if (!r.ok) throw Error("Music review unavailable"); return r.json(); }),
         fetch("data/music-worlds.json").then(r => { if (!r.ok) throw Error("Music worlds unavailable"); return r.json(); }),
       ]);
-      state.taste = taste; state.catalog = recommendations.catalog || []; state.connections = connections; state.deepcuts = deepcuts; state.music = music.tracks || []; state.worlds = worlds.worlds || [];
+      state.taste = taste; state.catalog = recommendations.catalog || []; state.connections = connections; state.deepcuts = deepcuts; state.stories = stories.trails || []; state.music = music.tracks || []; state.worlds = worlds.worlds || [];
       renderHome(); renderWorlds(); renderMusic(); renderDeepcuts(); renderPeople(); setupLibrary(); renderKafka(); route();
     } catch (error) {
       $("#status").classList.remove("sr-only");
@@ -430,6 +438,12 @@
   }
   $("#open-sources").onclick = () => { location.hash = "sources"; };
   $("#back-home").onclick = () => { location.hash = "home"; };
+  $("#story-share").onclick = async () => {
+    const text = storyResultsText();
+    if (navigator.share) { try { await navigator.share({ title: "My story trails", text }); return; } catch (error) { if (error.name === "AbortError") return; } }
+    try { await navigator.clipboard.writeText(text); $("#status").textContent = "Story trails copied. Save or paste them anywhere as a backup."; }
+    catch (_) { $("#status").textContent = "Share was blocked. Try again from the secure live site."; }
+  };
   $$('[data-music-rating]').forEach(button => button.onclick = () => {
     const item = state.music[state.musicIndex]; if (!item) return;
     const ratings = musicRatings(); ratings[item.id] = button.dataset.musicRating; saveMusicRatings(ratings);

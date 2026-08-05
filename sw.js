@@ -1,4 +1,4 @@
-const CACHE = 'jerry-taste-engine-v23-music-map';
+const CACHE = 'jerry-taste-engine-v24-story-trails';
 const SHELL = [
   './',
   './index.html',
@@ -13,6 +13,7 @@ const SHELL = [
   './data/work-connections.json',
   './data/actual-taste.json',
   './data/deepcuts.json',
+  './data/story-trails.json',
   './data/music-review.json',
   './data/music-worlds.json',
 ];

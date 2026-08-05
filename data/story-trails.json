@@ -1,0 +1,64 @@
+{
+  "version": "2026-08-04",
+  "principle": "Preserve the state Jerry named: now, next, want more, or later. Do not flatten all interest into one recommendation queue.",
+  "trails": [
+    {
+      "id": "incal",
+      "status": "Read now",
+      "medium": "Comic · Mœbius doorway",
+      "title": "The Incal",
+      "creator": "Alejandro Jodorowsky & Mœbius",
+      "reason": "This is the rare non-random choice that satisfies both current pulls at once: Jodorowsky writes the world and Mœbius makes its visual language. Start here before sampling disconnected Mœbius pages.",
+      "boundary": "Technically Franco-Belgian comics rather than manga. The story can be chaotic and satirical; the decisive question is whether Mœbius’s world-making keeps pulling you forward.",
+      "actionLabel": "Open the official edition ↗",
+      "actionUrl": "https://www.humanoids.com/album/1110",
+      "sourceLabel": "Humanoids · direct creator edition",
+      "sourceUrl": "https://www.humanoids.com/album/1110",
+      "sourceReason": "Humanoids is the work’s publisher and identifies it directly as the science-fiction collaboration between Mœbius and Jodorowsky. This is creator lineage, not similarity scoring."
+    },
+    {
+      "id": "holy-mountain",
+      "status": "Watch now",
+      "medium": "Film · Jodorowsky doorway",
+      "title": "The Holy Mountain",
+      "creator": "Alejandro Jodorowsky",
+      "reason": "Use Jodorowsky’s most concentrated visual manifesto as the film test. It should answer quickly whether the handmade images, spiritual provocation, grotesque comedy, and anti-reality ending feel singular or merely self-important to you.",
+      "boundary": "Not a grounded narrative: it contains graphic, sacrilegious, sexual, and animal imagery. If symbolism without human attachment feels corny, that is a meaningful Not me—not a failure to understand it.",
+      "actionLabel": "Find where to watch ↗",
+      "actionUrl": "https://www.justwatch.com/us/movie/the-holy-mountain-1973/",
+      "sourceLabel": "Peter Bradshaw · The Guardian",
+      "sourceUrl": "https://www.theguardian.com/film/2020/jan/24/the-holy-mountain-review-alejandro-jodorowsky",
+      "sourceReason": "Bradshaw’s review names the exact tension worth testing: visionary countercultural imagery versus semi-comic spiritual posturing. The source sharpens the risk instead of promising you will love it."
+    },
+    {
+      "id": "wind-up-bird",
+      "status": "Read next · Kafka was Want more",
+      "medium": "Novel · Murakami branch",
+      "title": "The Wind-Up Bird Chronicle",
+      "creator": "Haruki Murakami · translated by Jay Rubin",
+      "reason": "This is the next full Murakami, not because it is simply popular, but because Kafka’s split realities, cats, disappearances, dream logic, music, and buried history all have a deeper, more adult predecessor here.",
+      "boundary": "It is 624 pages and much slower than the Kafka audiobook. It also turns toward marriage, wartime memory, and severe violence. Choose it when you want to live inside Murakami again, not when you only want another fast surreal plot.",
+      "actionLabel": "Open book and audiobook options ↗",
+      "actionUrl": "https://www.penguinrandomhouse.com/books/118727/the-wind-up-bird-chronicle-by-haruki-murakami/",
+      "sourceLabel": "Vintage / Penguin Random House",
+      "sourceUrl": "https://www.penguinrandomhouse.com/books/118727/the-wind-up-bird-chronicle-by-haruki-murakami/",
+      "sourceReason": "The publisher frames it as a dreamlike detective story, a disintegrating marriage, and an excavation of Japan’s Manchurian war history. That makes the continuation—and the change from Kafka—concrete."
+    },
+    {
+      "id": "long-books-later",
+      "status": "Later · intentionally parked",
+      "medium": "Long novels · no new branch",
+      "title": "The Count of Monte Cristo · 2666",
+      "creator": "Alexandre Dumas · Roberto Bolaño",
+      "reason": "Both remain real intentions, but neither should compete with the living Mœbius–Jodorowsky and Murakami threads. Parking them preserves interest without turning your future self into an obligation list.",
+      "boundary": "Monte Cristo is the more propulsive commitment; 2666 is the more fragmented, morally brutal one. Taste will not recommend beyond either until you move one from Later to Now.",
+      "actions": [
+        {"label": "Open free Monte Cristo edition ↗", "url": "https://standardebooks.org/ebooks/alexandre-dumas/the-count-of-monte-cristo/chapman-and-hall"},
+        {"label": "Open the 2666 publisher page ↗", "url": "https://www.penguin.co.uk/books/447755/2666-by-bolano-roberto/9781784879396"}
+      ],
+      "sourceLabel": "Your explicit later list",
+      "sourceUrl": "https://standardebooks.org/ebooks/alexandre-dumas/the-count-of-monte-cristo/chapman-and-hall",
+      "sourceReason": "The status comes from you, not a critic. The links are retrieval handles only; neither title is being promoted into the current queue."
+    }
+  ]
+}
