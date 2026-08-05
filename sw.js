@@ -1,4 +1,4 @@
-const CACHE = 'jerry-taste-engine-v20-full-queue';
+const CACHE = 'jerry-taste-engine-v21-music-review';
 const SHELL = [
   './',
   './index.html',
@@ -13,6 +13,7 @@ const SHELL = [
   './data/work-connections.json',
   './data/actual-taste.json',
   './data/deepcuts.json',
+  './data/music-review.json',
 ];
 const SCOPE = new URL(self.registration.scope);
 const INDEX = new URL('./index.html', SCOPE).href;

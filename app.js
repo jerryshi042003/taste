@@ -2,8 +2,9 @@
   "use strict";
   const $ = (s, root = document) => root.querySelector(s);
   const $$ = (s, root = document) => [...root.querySelectorAll(s)];
-  const state = { taste: null, catalog: [], connections: null, deepcuts: null, medium: "all", kafkaFilter: "all", nextFilter: "all" };
+  const state = { taste: null, catalog: [], connections: null, deepcuts: null, music: [], musicIndex: 0, medium: "all", kafkaFilter: "all", nextFilter: "all" };
   const progressKey = "jerry-taste-home-v1";
+  const musicKey = "jerry-taste-music-v1";
 
   function escapeHtml(value = "") {
     return String(value).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -13,6 +14,12 @@
   }
   function saveProgress(next) {
     try { localStorage.setItem(progressKey, JSON.stringify(next)); } catch (_) {}
+  }
+  function musicRatings() {
+    try { return JSON.parse(localStorage.getItem(musicKey) || "{}"); } catch (_) { return {}; }
+  }
+  function saveMusicRatings(next) {
+    try { localStorage.setItem(musicKey, JSON.stringify(next)); } catch (_) {}
   }
   function linkHtml(link, className = "") {
     if (!link?.url) return "";
@@ -256,8 +263,59 @@
     </article>`).join("");
     $$("#kafka-filters button").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.kafka === state.kafkaFilter)));
   }
+  function musicPredictionLabel(value) {
+    return value === "strong" ? "Strong like prediction" : value === "maybe" ? "Could go either way" : "Weak signal — useful test";
+  }
+  function musicRatingLabel(value) {
+    return ({ love: "Love", like: "Like", "not-for-me": "Not for me", unsure: "Unsure" })[value] || "";
+  }
+  function renderMusic() {
+    if (!state.music.length) return;
+    const ratings = musicRatings();
+    const answered = Object.keys(ratings).filter(id => ratings[id]).length;
+    const item = state.music[state.musicIndex];
+    const current = ratings[item.id] || "";
+    $("#music-progress-count").textContent = `${answered} of ${state.music.length} answered`;
+    $("#music-progress-note").textContent = answered === state.music.length ? "Review complete. Copy the results and send them back to make these authoritative." : `${state.music.length - answered} left · answers stay on this device`;
+    $("#music-progress-fill").style.width = `${Math.round(answered / state.music.length * 100)}%`;
+    $("#music-card").innerHTML = `<div class="music-card-index">${state.musicIndex + 1} / ${state.music.length}</div>
+      <div class="music-card-copy"><p class="eyebrow">${escapeHtml(item.lane)} · ${escapeHtml(musicPredictionLabel(item.prediction))}</p>
+      <h2>${escapeHtml(item.title)}</h2><p class="music-artist">${escapeHtml(item.artist)}</p>
+      <div class="music-why"><strong>Why it is here</strong><p>${escapeHtml(item.reason)}</p></div>
+      <p class="music-boundary">${escapeHtml(item.boundary)}</p>
+      <a class="primary-link music-listen" href="${escapeHtml(item.url)}" target="_blank" rel="noopener">Listen on Spotify</a></div>`;
+    $$('[data-music-rating]').forEach(button => {
+      const active = button.dataset.musicRating === current;
+      button.setAttribute("aria-pressed", String(active));
+      button.textContent = `${musicRatingLabel(button.dataset.musicRating)}${active ? " ✓" : ""}`;
+    });
+    $("#music-back").disabled = state.musicIndex === 0;
+    renderMusicSummary(ratings);
+  }
+  function moveToNextUnanswered() {
+    const ratings = musicRatings();
+    const next = state.music.findIndex((item, index) => index > state.musicIndex && !ratings[item.id]);
+    state.musicIndex = next >= 0 ? next : Math.min(state.musicIndex + 1, state.music.length - 1);
+    renderMusic();
+  }
+  function renderMusicSummary(ratings) {
+    const groups = ["love", "like", "not-for-me", "unsure"].map(value => [value, state.music.filter(item => ratings[item.id] === value)]);
+    $("#music-summary").innerHTML = `<p class="eyebrow">YOUR ANSWERS</p><div class="music-summary-grid">${groups.map(([value, items]) => `<div><strong>${items.length}</strong><span>${musicRatingLabel(value)}</span></div>`).join("")}</div>`;
+  }
+  function musicResultsText() {
+    const ratings = musicRatings();
+    const lines = ["Jerry's Taste — music review", "Predictions are not ratings; only the choices below are authoritative.", ""];
+    ["love", "like", "not-for-me", "unsure"].forEach(value => {
+      lines.push(`${musicRatingLabel(value).toUpperCase()}:`);
+      const items = state.music.filter(item => ratings[item.id] === value);
+      lines.push(...(items.length ? items.map(item => `- ${item.title} — ${item.artist}`) : ["- None yet"]), "");
+    });
+    const unanswered = state.music.filter(item => !ratings[item.id]);
+    lines.push("UNANSWERED:", ...(unanswered.length ? unanswered.map(item => `- ${item.title} — ${item.artist}`) : ["- None"]));
+    return lines.join("\n");
+  }
   function showView(name) {
-    const allowed = ["home", "deepcuts", "people", "library", "kafka", "sources"];
+    const allowed = ["home", "music", "deepcuts", "people", "library", "kafka", "sources"];
     if (!allowed.includes(name)) name = "home";
     $$(".view").forEach(view => { view.hidden = view.id !== `${name}-view`; });
     $$("[data-nav]").forEach(link => link.toggleAttribute("aria-current", link.dataset.nav === name));
@@ -267,14 +325,15 @@
   function route() { showView(location.hash.slice(1) || "home"); }
   async function start() {
     try {
-      const [taste, recommendations, connections, deepcuts] = await Promise.all([
+      const [taste, recommendations, connections, deepcuts, music] = await Promise.all([
         fetch("data/actual-taste.json").then(r => { if (!r.ok) throw Error("Taste map unavailable"); return r.json(); }),
         fetch("data/recommendations.json").then(r => { if (!r.ok) throw Error("Library unavailable"); return r.json(); }),
         fetch("data/work-connections.json").then(r => { if (!r.ok) throw Error("Kafka map unavailable"); return r.json(); }),
         fetch("data/deepcuts.json").then(r => { if (!r.ok) throw Error("Deep cuts unavailable"); return r.json(); }),
+        fetch("data/music-review.json").then(r => { if (!r.ok) throw Error("Music review unavailable"); return r.json(); }),
       ]);
-      state.taste = taste; state.catalog = recommendations.catalog || []; state.connections = connections; state.deepcuts = deepcuts;
-      renderHome(); renderDeepcuts(); renderPeople(); setupLibrary(); renderKafka(); route();
+      state.taste = taste; state.catalog = recommendations.catalog || []; state.connections = connections; state.deepcuts = deepcuts; state.music = music.tracks || [];
+      renderHome(); renderMusic(); renderDeepcuts(); renderPeople(); setupLibrary(); renderKafka(); route();
     } catch (error) {
       $("#status").classList.remove("sr-only");
       $("#status").textContent = `${error.message}. Reload when online.`;
@@ -282,6 +341,23 @@
   }
   $("#open-sources").onclick = () => { location.hash = "sources"; };
   $("#back-home").onclick = () => { location.hash = "home"; };
+  $$('[data-music-rating]').forEach(button => button.onclick = () => {
+    const item = state.music[state.musicIndex]; if (!item) return;
+    const ratings = musicRatings(); ratings[item.id] = button.dataset.musicRating; saveMusicRatings(ratings);
+    $("#status").textContent = `${item.title} marked ${musicRatingLabel(button.dataset.musicRating)}.`;
+    moveToNextUnanswered();
+  });
+  $("#music-back").onclick = () => { state.musicIndex = Math.max(0, state.musicIndex - 1); renderMusic(); };
+  $("#music-skip").onclick = () => { state.musicIndex = (state.musicIndex + 1) % state.music.length; renderMusic(); };
+  $("#music-copy").onclick = async () => {
+    const result = musicResultsText();
+    try { await navigator.clipboard.writeText(result); $("#status").textContent = "Music results copied. Paste them back into chat when ready."; }
+    catch (_) {
+      const field = document.createElement("textarea"); field.value = result; field.setAttribute("readonly", ""); field.style.position = "fixed"; field.style.opacity = "0";
+      document.body.append(field); field.select(); const copied = document.execCommand("copy"); field.remove();
+      $("#status").textContent = copied ? "Music results copied. Paste them back into chat when ready." : "Copy was blocked. Try again from the secure live site.";
+    }
+  };
   addEventListener("hashchange", route);
   document.addEventListener("error", event => {
     const image = event.target;

@@ -224,6 +224,34 @@ h1 { margin: 0; font: 700 clamp(2.6rem, 8vw, 5.8rem)/.93 ui-serif, Georgia, seri
 .method-grid h2 { font: 700 1.4rem/1 ui-serif, Georgia, serif; }
 .method-grid p, .source-note { color: var(--muted); }
 .source-note { max-width: 680px; margin: 30px 0; }
+.music-head { padding-bottom: 22px; }
+.music-progress { display: grid; gap: 10px; margin-bottom: 16px; }
+.music-progress > div:first-child { display: flex; justify-content: space-between; gap: 14px; color: var(--muted); font-size: .82rem; }
+.music-progress strong { color: var(--ink); }
+.music-progress-line { height: 5px; overflow: hidden; border-radius: 99px; background: var(--soft); }
+.music-progress-line span { display: block; height: 100%; width: 0; border-radius: inherit; background: var(--accent); transition: width .2s ease; }
+.music-card { min-height: 410px; position: relative; display: grid; place-items: center; padding: clamp(28px, 7vw, 72px); border-radius: 26px; background: #202625; color: white; }
+.music-card-index { position: absolute; top: 18px; right: 20px; color: #aaa9a3; font-size: .78rem; }
+.music-card-copy { width: min(100%, 720px); }
+.music-card .eyebrow { color: #e7ad79; }
+.music-card h2 { margin: 6px 0 0; font: 700 clamp(2.4rem, 8vw, 5.4rem)/.94 ui-serif, Georgia, serif; letter-spacing: -.055em; }
+.music-artist { margin: 10px 0 30px; color: #d4d1c9; font-size: 1.15rem; }
+.music-why { max-width: 620px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,.2); }
+.music-why strong { color: #e7ad79; font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; }
+.music-why p { margin: 6px 0; color: #ece8df; }
+.music-boundary { max-width: 620px; color: #aaa9a3; font-size: .82rem; }
+.music-listen { display: inline-flex; align-items: center; min-height: 46px; margin-top: 12px; padding: 10px 16px; background: white; color: #202625; text-decoration: none; }
+.music-review-actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 12px; }
+.music-review-actions button { min-height: 58px; border-radius: 14px; background: var(--card); font-weight: 750; }
+.music-review-actions button[aria-pressed="true"] { background: var(--ink); color: white; border-color: var(--ink); }
+.music-utility-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.music-utility-actions button { font-size: .82rem; }
+.music-utility-actions button:disabled { cursor: default; opacity: .4; }
+.music-summary { margin-top: 34px; padding-block: 22px; border-block: 1px solid var(--line); }
+.music-summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.music-summary-grid div { display: grid; }
+.music-summary-grid strong { font: 700 2rem/1 ui-serif, Georgia, serif; }
+.music-summary-grid span { color: var(--muted); font-size: .82rem; }
 
 @media (max-width: 760px) {
   .site-head, main { width: min(100% - 24px, 1080px); }
@@ -264,6 +292,10 @@ h1 { margin: 0; font: 700 clamp(2.6rem, 8vw, 5.8rem)/.93 ui-serif, Georgia, seri
   .record { width: 88px; }
   .kafka-feature h2 { font-size: 1.5rem; }
   .kafka-list, .method-grid { grid-template-columns: 1fr; }
+  .music-progress > div:first-child { display: grid; gap: 2px; }
+  .music-card { min-height: 390px; padding: 54px 24px 28px; }
+  .music-review-actions { grid-template-columns: repeat(2, 1fr); position: sticky; bottom: max(8px, env(safe-area-inset-bottom)); z-index: 10; padding: 8px; margin-inline: -8px; border-radius: 18px; background: color-mix(in srgb, var(--paper) 92%, transparent); backdrop-filter: blur(18px); }
+  .music-review-actions button { min-height: 54px; }
 }
 
 @media (max-width: 420px) {
@@ -272,6 +304,7 @@ h1 { margin: 0; font: 700 clamp(2.6rem, 8vw, 5.8rem)/.93 ui-serif, Georgia, seri
   .library-item > summary { grid-template-columns: 52px minmax(0, 1fr); }
   .library-item > summary > img { width: 52px; height: 70px; }
   .library-item > summary > span { grid-column: 2; justify-self: start; }
+  .music-summary-grid { grid-template-columns: repeat(2, 1fr); row-gap: 18px; }
 }
 
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }

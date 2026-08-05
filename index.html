@@ -16,6 +16,7 @@
   <a class="wordmark" href="#home" aria-label="Taste home">Taste</a>
   <nav aria-label="Taste sections">
     <a href="#home" data-nav="home">Today</a>
+    <a href="#music" data-nav="music">Music</a>
     <a href="#deepcuts" data-nav="deepcuts">What next</a>
     <a href="#people" data-nav="people">People</a>
     <a href="#library" data-nav="library">Library</a>
@@ -61,6 +62,31 @@
         <button id="open-sources" type="button">How reasons are made</button>
       </div>
     </section>
+  </section>
+
+  <section id="music-view" class="view" hidden>
+    <header class="page-head music-head">
+      <p class="eyebrow">ATTENTION IS NOT LOVE</p>
+      <h1>What actually lands?</h1>
+      <p>One song at a time. My label is only a prediction from your listening patterns; your answer is the taste record.</p>
+    </header>
+    <section class="music-progress" aria-label="Music review progress">
+      <div><strong id="music-progress-count">0 of 0 answered</strong><span id="music-progress-note">Start anywhere. Your answers stay on this device.</span></div>
+      <div class="music-progress-line" aria-hidden="true"><span id="music-progress-fill"></span></div>
+    </section>
+    <section id="music-card" class="music-card" aria-live="polite"></section>
+    <div class="music-review-actions" role="group" aria-label="Rate this song">
+      <button type="button" data-music-rating="love">Love</button>
+      <button type="button" data-music-rating="like">Like</button>
+      <button type="button" data-music-rating="not-for-me">Not for me</button>
+      <button type="button" data-music-rating="unsure">Unsure</button>
+    </div>
+    <div class="music-utility-actions">
+      <button id="music-back" type="button">Previous</button>
+      <button id="music-skip" type="button">Skip for now</button>
+      <button id="music-copy" type="button">Copy my results</button>
+    </div>
+    <section id="music-summary" class="music-summary" aria-label="Music rating summary"></section>
   </section>
 
   <section id="deepcuts-view" class="view" hidden>

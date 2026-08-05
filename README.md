@@ -4,7 +4,7 @@
 
 **[Open Taste](https://jerryshi042003.github.io/taste/)**
 
-Taste is a local-first movie, manga, book, and creator map. It uses the exact reason a work mattered—grounded struggle, singular form, moral clarity, or a failed expectation—to choose what deserves attention next.
+Taste is a local-first movie, manga, book, music, and creator map. It uses the exact reason a work mattered—grounded struggle, singular form, moral clarity, or a failed expectation—to choose what deserves attention next.
 
 ## What it does
 
@@ -12,6 +12,7 @@ Taste is a local-first movie, manga, book, and creator map. It uses the exact re
 - Connects works through 202 cited person-to-work paths, keeping direct choices separate from editorial inference.
 - Records Started, Finished, Dropped, and Saved reactions in the browser and reranks immediately.
 - Explains every recommendation with its strongest reason, risk, and source trail.
+- Runs a 51-song, one-at-a-time music calibration where listening history creates only a prediction and Jerry's Love / Like / Not for me / Unsure tap becomes the rating.
 
 ## Why it exists
 
