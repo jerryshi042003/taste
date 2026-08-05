@@ -242,6 +242,10 @@ h1 { margin: 0; font: 700 clamp(2.6rem, 8vw, 5.8rem)/.93 ui-serif, Georgia, seri
 .music-why { max-width: 620px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,.2); }
 .music-why strong { color: #e7ad79; font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; }
 .music-why p { margin: 6px 0; color: #ece8df; }
+.music-trust { max-width: 620px; margin-top: 16px; padding: 14px 16px; border: 1px solid rgba(255,255,255,.18); border-radius: 13px; background: rgba(255,255,255,.055); }
+.music-trust strong { color: #e7ad79; font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; }
+.music-trust p { margin: 6px 0 2px; color: #d4d1c9; font-size: .86rem; }
+.music-trust a { display: inline-flex; min-height: 42px; align-items: center; color: white; font-size: .78rem; font-weight: 750; }
 .music-boundary { max-width: 620px; color: #aaa9a3; font-size: .82rem; }
 .music-listen { display: inline-flex; align-items: center; min-height: 46px; margin-top: 12px; padding: 10px 16px; background: white; color: #202625; text-decoration: none; }
 .music-review-actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 12px; }
@@ -250,11 +254,32 @@ h1 { margin: 0; font: 700 clamp(2.6rem, 8vw, 5.8rem)/.93 ui-serif, Georgia, seri
 .music-utility-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
 .music-utility-actions button { font-size: .82rem; }
 .music-utility-actions button:disabled { cursor: default; opacity: .4; }
-.music-summary { margin-top: 34px; padding-block: 22px; border-block: 1px solid var(--line); }
+.music-summary { margin: 0 0 28px; padding-block: 22px; border-block: 1px solid var(--line); }
 .music-summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
 .music-summary-grid div { display: grid; }
 .music-summary-grid strong { font: 700 2rem/1 ui-serif, Georgia, serif; }
 .music-summary-grid span { color: var(--muted); font-size: .82rem; }
+.world-map-title { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 20px; }
+.world-map-title h2 { margin: 4px 0 0; font: 700 1.7rem/1 ui-serif, Georgia, serif; letter-spacing: -.025em; }
+.world-map-title > p { max-width: 460px; margin: 0; color: var(--muted); font-size: .86rem; text-align: right; }
+.world-map-list { display: grid; gap: 10px; margin-top: 22px; }
+.world-map-card { padding: 16px; border: 1px solid var(--line); border-radius: 15px; background: var(--card); }
+.world-map-head { display: grid; grid-template-columns: 92px minmax(0,1fr); align-items: center; gap: 12px; }
+.world-map-head h3 { margin: 0; font: 700 1.05rem/1.1 ui-serif, Georgia, serif; }
+.world-map-head p { margin: 3px 0 0; color: var(--muted); font-size: .82rem; }
+.world-rating { display: inline-flex; min-height: 32px; align-items: center; justify-content: center; padding: 5px 9px; border-radius: 999px; color: white; background: var(--ink); font-size: .7rem; font-weight: 800; text-align: center; }
+.world-rating-want-more { background: var(--accent); }
+.world-rating-phase { background: #746858; }
+.world-rating-not-me { background: #817e78; }
+.world-map-links { display: flex; flex-wrap: wrap; gap: 8px 16px; margin-top: 11px; }
+.world-map-links a { display: inline-flex; min-height: 42px; align-items: center; color: var(--accent); font-size: .78rem; font-weight: 750; }
+.world-map-links .spotify-link { padding: 7px 11px; border-radius: 999px; background: #1ed760; color: #102116; text-decoration: none; }
+.world-next { margin: 14px -3px -3px; padding: 15px; border-radius: 12px; background: #202625; color: white; }
+.world-next h4 { margin: 3px 0 0; font: 700 1.2rem/1.05 ui-serif, Georgia, serif; }
+.world-next > p { margin: 7px 0; color: #d2d0c9; font-size: .84rem; }
+.world-next .world-next-artist { margin-top: 3px; color: #aeadA7; }
+.world-next .world-map-links a:not(.spotify-link) { color: #ead1b9; }
+.world-branch-paused { margin: 12px 0 0; color: var(--muted); font-size: .78rem; }
 
 @media (max-width: 760px) {
   .site-head, main { width: min(100% - 24px, 1080px); }
@@ -296,6 +321,8 @@ h1 { margin: 0; font: 700 clamp(2.6rem, 8vw, 5.8rem)/.93 ui-serif, Georgia, seri
   .kafka-feature h2 { font-size: 1.5rem; }
   .kafka-list, .method-grid { grid-template-columns: 1fr; }
   .music-progress > div:first-child { display: grid; gap: 2px; }
+  .world-map-title { display: block; }
+  .world-map-title > p { margin-top: 8px; text-align: left; }
   .music-mode { display: grid; grid-template-columns: 1fr 1fr; width: 100%; }
   .music-card { min-height: 390px; padding: 54px 24px 28px; }
   .music-review-actions { grid-template-columns: repeat(2, 1fr); position: sticky; bottom: max(8px, env(safe-area-inset-bottom)); z-index: 10; padding: 8px; margin-inline: -8px; border-radius: 18px; background: color-mix(in srgb, var(--paper) 92%, transparent); backdrop-filter: blur(18px); }

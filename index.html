@@ -75,6 +75,7 @@
       <button type="button" data-music-mode="songs" aria-pressed="false">Song answers</button>
     </div>
     <div id="music-worlds-panel">
+      <section id="world-summary" class="music-summary" aria-label="Your saved Music Map"></section>
       <section class="music-progress" aria-label="Album and world review progress">
         <div><strong id="world-progress-count">0 of 0 answered</strong><span id="world-progress-note">Classify the world, not one temporary replay.</span></div>
         <div class="music-progress-line" aria-hidden="true"><span id="world-progress-fill"></span></div>
@@ -89,9 +90,8 @@
       <div class="music-utility-actions">
         <button id="world-back" type="button">Previous</button>
         <button id="world-skip" type="button">Skip for now</button>
-        <button id="world-share" type="button">Share my world results</button>
+        <button id="world-share" type="button">Share / back up my map</button>
       </div>
-      <section id="world-summary" class="music-summary" aria-label="Music world summary"></section>
     </div>
     <div id="music-songs-panel" hidden>
     <section class="music-progress" aria-label="Music review progress">

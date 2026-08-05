@@ -279,6 +279,26 @@
   function worldRatingLabel(value) {
     return ({ core: "Core", "want-more": "Want more", phase: "Phase only", "not-me": "Not me" })[value] || "";
   }
+  function worldSourceHtml(item, label = "How I found it") {
+    if (!item?.sourceUrl) return "";
+    return `<div class="music-trust"><strong>${escapeHtml(label)}</strong><p>${escapeHtml(item.sourceReason)}</p>
+      <a href="${escapeHtml(item.sourceUrl)}" target="_blank" rel="noopener">${escapeHtml(item.sourceLabel)} ↗</a></div>`;
+  }
+  function worldMapItemHtml(item, rating) {
+    const continueBranch = ["core", "want-more"].includes(rating) && item.next;
+    return `<article class="world-map-card">
+      <div class="world-map-head"><span class="world-rating world-rating-${escapeHtml(rating)}">${escapeHtml(worldRatingLabel(rating))}</span>
+      <div><h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.artist)}</p></div></div>
+      <div class="world-map-links"><a class="spotify-link" href="${escapeHtml(item.url)}" target="_blank" rel="noopener">Open in Spotify ↗</a>
+      <a href="${escapeHtml(item.sourceUrl)}" target="_blank" rel="noopener">Why: ${escapeHtml(item.sourceLabel)} ↗</a></div>
+      ${continueBranch ? `<div class="world-next"><p class="insight-label">NEXT ALBUM · THIS BRANCH STAYS OPEN</p>
+        <h4>${escapeHtml(item.next.title)}</h4><p class="world-next-artist">${escapeHtml(item.next.artist)}</p>
+        <p>${escapeHtml(item.next.reason)}</p><div class="world-map-links">
+        <a class="spotify-link" href="${escapeHtml(item.next.url)}" target="_blank" rel="noopener">Open next album in Spotify ↗</a>
+        <a href="${escapeHtml(item.next.sourceUrl)}" target="_blank" rel="noopener">Why this step: ${escapeHtml(item.next.sourceLabel)} ↗</a></div></div>`
+        : `<p class="world-branch-paused">Branch paused. Taste will remember the result without feeding you more of it.</p>`}
+    </article>`;
+  }
   function renderWorlds() {
     if (!state.worlds.length) return;
     const ratings = worldRatings();
@@ -286,14 +306,15 @@
     const item = state.worlds[state.worldIndex];
     const current = ratings[item.id] || "";
     $("#world-progress-count").textContent = `${answered} of ${state.worlds.length} answered`;
-    $("#world-progress-note").textContent = answered === state.worlds.length ? "World map complete. Share it back to make it authoritative." : `${state.worlds.length - answered} left · saved on this device`;
+    $("#world-progress-note").textContent = answered === state.worlds.length ? "Map complete on this phone. Share a backup if you want it to survive a browser reset." : `${state.worlds.length - answered} left · saved on this device`;
     $("#world-progress-fill").style.width = `${Math.round(answered / state.worlds.length * 100)}%`;
     $("#world-card").innerHTML = `<div class="music-card-index">${state.worldIndex + 1} / ${state.worlds.length}</div>
       <div class="music-card-copy"><p class="eyebrow">${escapeHtml(item.type)} · ${escapeHtml(item.bridge)}</p>
       <h2>${escapeHtml(item.title)}</h2><p class="music-artist">${escapeHtml(item.artist)}</p>
       <div class="music-why"><strong>Why this whole world</strong><p>${escapeHtml(item.reason)}</p></div>
+      ${worldSourceHtml(item)}
       <p class="music-boundary">${escapeHtml(item.boundary)}</p>
-      <a class="primary-link music-listen" href="${escapeHtml(item.url)}" target="_blank" rel="noopener">Open the album</a></div>`;
+      <a class="primary-link music-listen" href="${escapeHtml(item.url)}" target="_blank" rel="noopener">Open album in Spotify ↗</a></div>`;
     $$('[data-world-rating]').forEach(button => {
       const active = button.dataset.worldRating === current;
       button.setAttribute("aria-pressed", String(active));
@@ -301,7 +322,11 @@
     });
     $("#world-back").disabled = state.worldIndex === 0;
     const groups = ["core", "want-more", "phase", "not-me"];
-    $("#world-summary").innerHTML = `<p class="eyebrow">YOUR DURABLE MAP</p><div class="music-summary-grid">${groups.map(value => `<div><strong>${state.worlds.filter(item => ratings[item.id] === value).length}</strong><span>${worldRatingLabel(value)}</span></div>`).join("")}</div>`;
+    const saved = state.worlds.filter(item => ratings[item.id]);
+    $("#world-summary").innerHTML = `<div class="world-map-title"><div><p class="eyebrow">YOUR MUSIC MAP</p><h2>${answered ? `${answered} result${answered === 1 ? "" : "s"}, remembered` : "Nothing recorded yet"}</h2></div>
+      <p>Saved in Taste on this device. Core and Want more open one researched album deeper; Phase and Not me stop the branch.</p></div>
+      <div class="music-summary-grid">${groups.map(value => `<div><strong>${state.worlds.filter(item => ratings[item.id] === value).length}</strong><span>${worldRatingLabel(value)}</span></div>`).join("")}</div>
+      ${saved.length ? `<div class="world-map-list">${saved.map(item => worldMapItemHtml(item, ratings[item.id])).join("")}</div>` : ""}`;
   }
   function moveToNextWorld() {
     const ratings = worldRatings();
@@ -311,11 +336,18 @@
   }
   function worldResultsText() {
     const ratings = worldRatings();
-    const lines = ["Jerry's Taste — albums & music worlds", "Songs are evidence; these larger containers are the durable map.", ""];
+    const lines = ["Jerry's Taste — Music Map", "Songs are evidence; these larger containers are the durable map.", "https://jerryshi042003.github.io/taste/#music", ""];
     ["core", "want-more", "phase", "not-me"].forEach(value => {
       lines.push(`${worldRatingLabel(value).toUpperCase()}:`);
       const items = state.worlds.filter(item => ratings[item.id] === value);
-      lines.push(...(items.length ? items.map(item => `- ${item.title} — ${item.artist}`) : ["- None yet"]), "");
+      if (!items.length) lines.push("- None yet");
+      items.forEach(item => {
+        lines.push(`- ${item.title} — ${item.artist}`, `  Spotify: ${item.url}`, `  Found through: ${item.sourceLabel} — ${item.sourceUrl}`);
+        if (["core", "want-more"].includes(value) && item.next) {
+          lines.push(`  Next album: ${item.next.title} — ${item.next.artist}`, `  Next Spotify: ${item.next.url}`, `  Why this step: ${item.next.sourceLabel} — ${item.next.sourceUrl}`);
+        }
+      });
+      lines.push("");
     });
     return lines.join("\n");
   }
@@ -416,7 +448,7 @@
   $("#world-share").onclick = async () => {
     const text = worldResultsText();
     if (navigator.share) { try { await navigator.share({ title: "My music worlds", text }); return; } catch (error) { if (error.name === "AbortError") return; } }
-    try { await navigator.clipboard.writeText(text); $("#status").textContent = "World results copied. Paste them into chat."; }
+    try { await navigator.clipboard.writeText(text); $("#status").textContent = "Music Map copied. Save or paste it anywhere as a backup."; }
     catch (_) { $("#status").textContent = "Share was blocked. Try again from the secure live site."; }
   };
   $("#music-back").onclick = () => { state.musicIndex = Math.max(0, state.musicIndex - 1); renderMusic(); };

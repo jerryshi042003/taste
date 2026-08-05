@@ -1,4 +1,4 @@
-const CACHE = 'jerry-taste-engine-v22-music-worlds';
+const CACHE = 'jerry-taste-engine-v23-music-map';
 const SHELL = [
   './',
   './index.html',
