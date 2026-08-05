@@ -2,9 +2,10 @@
   "use strict";
   const $ = (s, root = document) => root.querySelector(s);
   const $$ = (s, root = document) => [...root.querySelectorAll(s)];
-  const state = { taste: null, catalog: [], connections: null, deepcuts: null, music: [], musicIndex: 0, medium: "all", kafkaFilter: "all", nextFilter: "all" };
+  const state = { taste: null, catalog: [], connections: null, deepcuts: null, music: [], musicIndex: 0, worlds: [], worldIndex: 0, musicMode: "worlds", medium: "all", kafkaFilter: "all", nextFilter: "all" };
   const progressKey = "jerry-taste-home-v1";
   const musicKey = "jerry-taste-music-v1";
+  const worldKey = "jerry-taste-music-worlds-v1";
 
   function escapeHtml(value = "") {
     return String(value).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
@@ -20,6 +21,12 @@
   }
   function saveMusicRatings(next) {
     try { localStorage.setItem(musicKey, JSON.stringify(next)); } catch (_) {}
+  }
+  function worldRatings() {
+    try { return JSON.parse(localStorage.getItem(worldKey) || "{}"); } catch (_) { return {}; }
+  }
+  function saveWorldRatings(next) {
+    try { localStorage.setItem(worldKey, JSON.stringify(next)); } catch (_) {}
   }
   function linkHtml(link, className = "") {
     if (!link?.url) return "";
@@ -269,6 +276,55 @@
   function musicRatingLabel(value) {
     return ({ love: "Love", like: "Like", "not-for-me": "Not for me", unsure: "Unsure" })[value] || "";
   }
+  function worldRatingLabel(value) {
+    return ({ core: "Core", "want-more": "Want more", phase: "Phase only", "not-me": "Not me" })[value] || "";
+  }
+  function renderWorlds() {
+    if (!state.worlds.length) return;
+    const ratings = worldRatings();
+    const answered = state.worlds.filter(item => ratings[item.id]).length;
+    const item = state.worlds[state.worldIndex];
+    const current = ratings[item.id] || "";
+    $("#world-progress-count").textContent = `${answered} of ${state.worlds.length} answered`;
+    $("#world-progress-note").textContent = answered === state.worlds.length ? "World map complete. Share it back to make it authoritative." : `${state.worlds.length - answered} left · saved on this device`;
+    $("#world-progress-fill").style.width = `${Math.round(answered / state.worlds.length * 100)}%`;
+    $("#world-card").innerHTML = `<div class="music-card-index">${state.worldIndex + 1} / ${state.worlds.length}</div>
+      <div class="music-card-copy"><p class="eyebrow">${escapeHtml(item.type)} · ${escapeHtml(item.bridge)}</p>
+      <h2>${escapeHtml(item.title)}</h2><p class="music-artist">${escapeHtml(item.artist)}</p>
+      <div class="music-why"><strong>Why this whole world</strong><p>${escapeHtml(item.reason)}</p></div>
+      <p class="music-boundary">${escapeHtml(item.boundary)}</p>
+      <a class="primary-link music-listen" href="${escapeHtml(item.url)}" target="_blank" rel="noopener">Open the album</a></div>`;
+    $$('[data-world-rating]').forEach(button => {
+      const active = button.dataset.worldRating === current;
+      button.setAttribute("aria-pressed", String(active));
+      button.textContent = `${worldRatingLabel(button.dataset.worldRating)}${active ? " ✓" : ""}`;
+    });
+    $("#world-back").disabled = state.worldIndex === 0;
+    const groups = ["core", "want-more", "phase", "not-me"];
+    $("#world-summary").innerHTML = `<p class="eyebrow">YOUR DURABLE MAP</p><div class="music-summary-grid">${groups.map(value => `<div><strong>${state.worlds.filter(item => ratings[item.id] === value).length}</strong><span>${worldRatingLabel(value)}</span></div>`).join("")}</div>`;
+  }
+  function moveToNextWorld() {
+    const ratings = worldRatings();
+    const next = state.worlds.findIndex((item, index) => index > state.worldIndex && !ratings[item.id]);
+    state.worldIndex = next >= 0 ? next : Math.min(state.worldIndex + 1, state.worlds.length - 1);
+    renderWorlds();
+  }
+  function worldResultsText() {
+    const ratings = worldRatings();
+    const lines = ["Jerry's Taste — albums & music worlds", "Songs are evidence; these larger containers are the durable map.", ""];
+    ["core", "want-more", "phase", "not-me"].forEach(value => {
+      lines.push(`${worldRatingLabel(value).toUpperCase()}:`);
+      const items = state.worlds.filter(item => ratings[item.id] === value);
+      lines.push(...(items.length ? items.map(item => `- ${item.title} — ${item.artist}`) : ["- None yet"]), "");
+    });
+    return lines.join("\n");
+  }
+  function setMusicMode(mode) {
+    state.musicMode = mode;
+    $("#music-worlds-panel").hidden = mode !== "worlds";
+    $("#music-songs-panel").hidden = mode !== "songs";
+    $$('[data-music-mode]').forEach(button => button.setAttribute("aria-pressed", String(button.dataset.musicMode === mode)));
+  }
   function renderMusic() {
     if (!state.music.length) return;
     const ratings = musicRatings();
@@ -325,15 +381,16 @@
   function route() { showView(location.hash.slice(1) || "home"); }
   async function start() {
     try {
-      const [taste, recommendations, connections, deepcuts, music] = await Promise.all([
+      const [taste, recommendations, connections, deepcuts, music, worlds] = await Promise.all([
         fetch("data/actual-taste.json").then(r => { if (!r.ok) throw Error("Taste map unavailable"); return r.json(); }),
         fetch("data/recommendations.json").then(r => { if (!r.ok) throw Error("Library unavailable"); return r.json(); }),
         fetch("data/work-connections.json").then(r => { if (!r.ok) throw Error("Kafka map unavailable"); return r.json(); }),
         fetch("data/deepcuts.json").then(r => { if (!r.ok) throw Error("Deep cuts unavailable"); return r.json(); }),
         fetch("data/music-review.json").then(r => { if (!r.ok) throw Error("Music review unavailable"); return r.json(); }),
+        fetch("data/music-worlds.json").then(r => { if (!r.ok) throw Error("Music worlds unavailable"); return r.json(); }),
       ]);
-      state.taste = taste; state.catalog = recommendations.catalog || []; state.connections = connections; state.deepcuts = deepcuts; state.music = music.tracks || [];
-      renderHome(); renderMusic(); renderDeepcuts(); renderPeople(); setupLibrary(); renderKafka(); route();
+      state.taste = taste; state.catalog = recommendations.catalog || []; state.connections = connections; state.deepcuts = deepcuts; state.music = music.tracks || []; state.worlds = worlds.worlds || [];
+      renderHome(); renderWorlds(); renderMusic(); renderDeepcuts(); renderPeople(); setupLibrary(); renderKafka(); route();
     } catch (error) {
       $("#status").classList.remove("sr-only");
       $("#status").textContent = `${error.message}. Reload when online.`;
@@ -347,6 +404,21 @@
     $("#status").textContent = `${item.title} marked ${musicRatingLabel(button.dataset.musicRating)}.`;
     moveToNextUnanswered();
   });
+  $$('[data-music-mode]').forEach(button => button.onclick = () => setMusicMode(button.dataset.musicMode));
+  $$('[data-world-rating]').forEach(button => button.onclick = () => {
+    const item = state.worlds[state.worldIndex]; if (!item) return;
+    const ratings = worldRatings(); ratings[item.id] = button.dataset.worldRating; saveWorldRatings(ratings);
+    $("#status").textContent = `${item.title} marked ${worldRatingLabel(button.dataset.worldRating)}.`;
+    moveToNextWorld();
+  });
+  $("#world-back").onclick = () => { state.worldIndex = Math.max(0, state.worldIndex - 1); renderWorlds(); };
+  $("#world-skip").onclick = () => { state.worldIndex = (state.worldIndex + 1) % state.worlds.length; renderWorlds(); };
+  $("#world-share").onclick = async () => {
+    const text = worldResultsText();
+    if (navigator.share) { try { await navigator.share({ title: "My music worlds", text }); return; } catch (error) { if (error.name === "AbortError") return; } }
+    try { await navigator.clipboard.writeText(text); $("#status").textContent = "World results copied. Paste them into chat."; }
+    catch (_) { $("#status").textContent = "Share was blocked. Try again from the secure live site."; }
+  };
   $("#music-back").onclick = () => { state.musicIndex = Math.max(0, state.musicIndex - 1); renderMusic(); };
   $("#music-skip").onclick = () => { state.musicIndex = (state.musicIndex + 1) % state.music.length; renderMusic(); };
   $("#music-copy").onclick = async () => {

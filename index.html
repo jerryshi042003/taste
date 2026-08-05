@@ -66,10 +66,34 @@
 
   <section id="music-view" class="view" hidden>
     <header class="page-head music-head">
-      <p class="eyebrow">ATTENTION IS NOT LOVE</p>
-      <h1>What actually lands?</h1>
-      <p>One song at a time. My label is only a prediction from your listening patterns; your answer is the taste record.</p>
+      <p class="eyebrow">SONGS COME AND GO</p>
+      <h1>Which worlds stay?</h1>
+      <p>Albums, artists, scenes, and phases come first. Songs are supporting evidence—not your personality.</p>
     </header>
+    <div class="music-mode" role="group" aria-label="Choose music review layer">
+      <button type="button" data-music-mode="worlds" aria-pressed="true">Albums & worlds</button>
+      <button type="button" data-music-mode="songs" aria-pressed="false">Song answers</button>
+    </div>
+    <div id="music-worlds-panel">
+      <section class="music-progress" aria-label="Album and world review progress">
+        <div><strong id="world-progress-count">0 of 0 answered</strong><span id="world-progress-note">Classify the world, not one temporary replay.</span></div>
+        <div class="music-progress-line" aria-hidden="true"><span id="world-progress-fill"></span></div>
+      </section>
+      <section id="world-card" class="music-card" aria-live="polite"></section>
+      <div class="music-review-actions" role="group" aria-label="Classify this music world">
+        <button type="button" data-world-rating="core">Core</button>
+        <button type="button" data-world-rating="want-more">Want more</button>
+        <button type="button" data-world-rating="phase">Phase only</button>
+        <button type="button" data-world-rating="not-me">Not me</button>
+      </div>
+      <div class="music-utility-actions">
+        <button id="world-back" type="button">Previous</button>
+        <button id="world-skip" type="button">Skip for now</button>
+        <button id="world-share" type="button">Share my world results</button>
+      </div>
+      <section id="world-summary" class="music-summary" aria-label="Music world summary"></section>
+    </div>
+    <div id="music-songs-panel" hidden>
     <section class="music-progress" aria-label="Music review progress">
       <div><strong id="music-progress-count">0 of 0 answered</strong><span id="music-progress-note">Start anywhere. Your answers stay on this device.</span></div>
       <div class="music-progress-line" aria-hidden="true"><span id="music-progress-fill"></span></div>
@@ -87,6 +111,7 @@
       <button id="music-copy" type="button">Copy my results</button>
     </div>
     <section id="music-summary" class="music-summary" aria-label="Music rating summary"></section>
+    </div>
   </section>
 
   <section id="deepcuts-view" class="view" hidden>

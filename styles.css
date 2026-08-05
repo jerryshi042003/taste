@@ -225,6 +225,9 @@ h1 { margin: 0; font: 700 clamp(2.6rem, 8vw, 5.8rem)/.93 ui-serif, Georgia, seri
 .method-grid p, .source-note { color: var(--muted); }
 .source-note { max-width: 680px; margin: 30px 0; }
 .music-head { padding-bottom: 22px; }
+.music-mode { display: inline-grid; grid-template-columns: repeat(2, auto); gap: 4px; margin-bottom: 22px; padding: 4px; border: 1px solid var(--line); border-radius: 999px; background: var(--card); }
+.music-mode button { min-height: 42px; padding: 8px 16px; border: 0; border-radius: 999px; background: transparent; }
+.music-mode button[aria-pressed="true"] { background: var(--ink); color: white; }
 .music-progress { display: grid; gap: 10px; margin-bottom: 16px; }
 .music-progress > div:first-child { display: flex; justify-content: space-between; gap: 14px; color: var(--muted); font-size: .82rem; }
 .music-progress strong { color: var(--ink); }
@@ -293,6 +296,7 @@ h1 { margin: 0; font: 700 clamp(2.6rem, 8vw, 5.8rem)/.93 ui-serif, Georgia, seri
   .kafka-feature h2 { font-size: 1.5rem; }
   .kafka-list, .method-grid { grid-template-columns: 1fr; }
   .music-progress > div:first-child { display: grid; gap: 2px; }
+  .music-mode { display: grid; grid-template-columns: 1fr 1fr; width: 100%; }
   .music-card { min-height: 390px; padding: 54px 24px 28px; }
   .music-review-actions { grid-template-columns: repeat(2, 1fr); position: sticky; bottom: max(8px, env(safe-area-inset-bottom)); z-index: 10; padding: 8px; margin-inline: -8px; border-radius: 18px; background: color-mix(in srgb, var(--paper) 92%, transparent); backdrop-filter: blur(18px); }
   .music-review-actions button { min-height: 54px; }
