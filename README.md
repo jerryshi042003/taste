@@ -2,8 +2,9 @@
 
 **A recommendation should remember the reason—not just the rating.**
 
-Personal recommendation prototype built around Jerry's library and preferences.
-No public demo is currently available.
+Personal recommendation project built around Jerry's library and preferences.
+This repository preserves an earlier source snapshot; its GitHub Pages mirror
+was retired. The personal app continues on a separate deployment.
 
 Taste is a local-first movie, manga, book, music, and creator map. It uses the exact reason a work mattered—grounded struggle, singular form, moral clarity, or a failed expectation—to choose what deserves attention next.
 
