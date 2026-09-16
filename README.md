@@ -2,7 +2,8 @@
 
 **A recommendation should remember the reason—not just the rating.**
 
-**[Open Taste](https://jerryshi042003.github.io/taste/)**
+Personal recommendation prototype built around Jerry's library and preferences.
+No public demo is currently available.
 
 Taste is a local-first movie, manga, book, music, and creator map. It uses the exact reason a work mattered—grounded struggle, singular form, moral clarity, or a failed expectation—to choose what deserves attention next.
 
@@ -22,7 +23,7 @@ The interface is deliberately quiet: artwork supplies the color, the first scree
 
 ## Public extraction boundary
 
-This repository is a reviewed mirror of the files already served by the public Taste deployment. It is not a mirror of the private `shishi88` monorepo.
+This repository is a reviewed mirror of the files from the former public Taste deployment. It is not a mirror of the private `shishi88` monorepo.
 
 Excluded on purpose:
 
@@ -32,7 +33,7 @@ Excluded on purpose:
 - unrelated projects and the private repository's Git history;
 - credentials and account-write code.
 
-Browser reactions remain on the device unless the user explicitly exports them. The public app does not require an account and does not write to a server.
+Browser reactions remain on the device unless the user explicitly exports them. The application source does not require an account and does not write to a server.
 
 ## Shape
 
@@ -46,8 +47,5 @@ three explained choices
 device-local reaction → immediate rerank
 ```
 
-The repository contains the public static application and the same reviewed data files used by the live deployment.
-
-GitHub Pages is the canonical host. Because the product is entirely static and
-stores reactions on-device, it has no server process to sleep and no database
-quota that can interrupt use.
+The repository contains the static application and reviewed data files. It can
+be served locally; reactions are stored on-device.
